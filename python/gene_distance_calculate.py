@@ -5,8 +5,7 @@ import scipy.io as sio
 import time
 from tqdm import tqdm
 import sys
-import multiprocessing
-from multiprocessing.pool import Pool
+from concurrent.futures import ThreadPoolExecutor
 import time
 
 _ot_cost_matrix: np.array = None
@@ -41,7 +40,7 @@ def _init_global(path, numItermax=_DEFAULT_NUMITERMAX):
 def cal_ot_mat(path, showProgressBar=True, processes:int=None, numItermax=_DEFAULT_NUMITERMAX):
   processes = int(processes) if isinstance(processes, float) else os.cpu_count()
   numItermax = int(numItermax) if isinstance(processes, float) else _DEFAULT_NUMITERMAX
-  print(f'Computing emd distance')
+  print(f'Computing emd distance..')
   
   _init_global(path, numItermax)
   n = _gene_expr_matrix.shape[1]
@@ -49,14 +48,12 @@ def cal_ot_mat(path, showProgressBar=True, processes:int=None, numItermax=_DEFAU
 
   start_time = time.perf_counter()
   # create and configure the process pool
-  with Pool(processes=processes, 
-            initializer=_init_global, 
-            initargs=(path,numItermax)) as pool:
+  with ThreadPoolExecutor(max_workers=processes) as pool:
       # prepare arguments
       items = ((i, j) for i in range(0, n-1) for j in range(i+1, n))
       # execute tasks and process results in order
       #result = pool.starmap(cal_ot, tqdm(items))
-      result_generator = pool.imap(_cal_ot, items)
+      result_generator = pool.map(_cal_ot, items)
       if showProgressBar:
         result_generator = tqdm(result_generator, total=npairs, position=0, leave=True)
       result = list(result_generator)
