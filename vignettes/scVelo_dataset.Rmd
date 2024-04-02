@@ -2,7 +2,10 @@
 title: "GeneTrajectory example (scVelo dataset)"
 author: "Rihao Qu"
 date: "9/20/2023"
-output: html_document
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_depth: 2
 ---
   
 ```{r setup, include=FALSE}
@@ -10,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #knitr::opts_chunk$set(fig.width=5, fig.height=4.5) 
 ```
 
-### Preparation
+# Preparation
 ```{r, warning = FALSE, message=FALSE}
 
 ##### Load required R libraries
@@ -25,7 +28,7 @@ require(plot3D)
 ```
 
 
-### Loading example data
+# Loading example data
 
 ```{r, warning = FALSE, fig.width=5.5, fig.height=4.5}
 ##### Import the example SMC data and take a preliminary visualization
@@ -34,9 +37,9 @@ DimPlot(data_S, group.by = "clusters", shuffle = T)
 ```
 
 ################################################
-### Gene-gene distance computation
+# Gene-gene distance computation
 ################################################
-##### Select genes
+## Select genes
 ```{r, warning = FALSE}
 assay <- "RNA"
 DefaultAssay(data_S) <- assay
@@ -47,14 +50,14 @@ genes <- all_genes[which(expr_percent > 0.01 & expr_percent < 0.5)]
 length(genes)
 ```
 
-##### Prepare the input for gene-gene Wasserstein distance computation
+## Prepare the input for gene-gene Wasserstein distance computation
 ```{r, warning = FALSE}
 data_S <- GeneTrajectory::RunDM(data_S)
 cell.graph.dist <- GetGraphDistance(data_S, K = 10, dims = 1:10)
 cg_output <- CoarseGrain(data_S, cell.graph.dist, genes, N = 1000)
 ```
 
-##### Prepare the input for gene-gene Wasserstein distance computation
+## Prepare the input for gene-gene Wasserstein distance computation
 ```{r, warning = FALSE}
 #####Save the files for computation in Python
 dir.path <- "/banach1/rq25/tmp/scVelo_example2/"
@@ -66,7 +69,7 @@ Matrix::writeMM(Matrix(cg_output[["gene.expression"]], sparse = T), paste0(dir.p
 ```
 
 ################################################
-##### Wasserstein distance computation in Python
+# Wasserstein distance computation in Python
 ################################################
 ```{r, warning = FALSE, fig.width=5, fig.height=4.5}
 # Make sure to install the latest version of POT module (python), using the following:
@@ -77,7 +80,7 @@ Matrix::writeMM(Matrix(cg_output[["gene.expression"]], sparse = T), paste0(dir.p
 ```
 
 ################################################
-### Gene trajectory inference and visualization
+# Gene trajectory inference and visualization
 ################################################
 ```{r, warning = FALSE, fig.width=4.5, fig.height=4}
 dir.path <- "/banach1/rq25/GeneTrajectory_data/more_biological_examples/scvelo_example/DM_DIM10_K10/"
@@ -121,7 +124,7 @@ for (i in 1:3){
 ```
 
 
-### Visualize gene bin plots
+# Visualize gene bin plots
 ```{r, warning = FALSE, fig.width=16, fig.height=3}
 
 data_S <- AddGeneBinScore(data_S, gene_trajectory, N.bin = 7, trajectories = 1:3, assay = "RNA", reverse = c(F, F, F))

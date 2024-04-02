@@ -93,9 +93,9 @@
 
     
     
-<div class="section level3">
-<h3 id="preparation">Preparation<a class="anchor" aria-label="anchor" href="#preparation"></a>
-</h3>
+<div class="section level2">
+<h2 id="preparation">Preparation<a class="anchor" aria-label="anchor" href="#preparation"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">##### Load required R libraries</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
@@ -107,27 +107,27 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org" class="external-link">Matrix</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">plot3D</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="loading-example-data">Loading example data<a class="anchor" aria-label="anchor" href="#loading-example-data"></a>
-</h3>
+<div class="section level2">
+<h2 id="loading-example-data">Loading example data<a class="anchor" aria-label="anchor" href="#loading-example-data"></a>
+</h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">##### Import the example SMC data and take a preliminary visualization</span></span>
 <span><span class="va">data_S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="st">"/banach1/rq25/GeneTrajectory_data/scVelo_tutorial_data_S.rds"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">data_S</span>, group.by <span class="op">=</span> <span class="st">"clusters"</span>, shuffle <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p><img src="scVelo_dataset_files/figure-html/unnamed-chunk-2-1.png" width="528"></p>
-<div id="section" class="section level48">
+<div id="section" class="section level49">
 <p class="heading"></p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="gene-gene-distance-computation">Gene-gene distance computation<a class="anchor" aria-label="anchor" href="#gene-gene-distance-computation"></a>
+</h2>
+<div id="section-1" class="section level49">
+<p class="heading"></p>
 </div>
 <div class="section level3">
-<h3 id="gene-gene-distance-computation">Gene-gene distance computation<a class="anchor" aria-label="anchor" href="#gene-gene-distance-computation"></a>
+<h3 id="select-genes">Select genes<a class="anchor" aria-label="anchor" href="#select-genes"></a>
 </h3>
-<div id="section-1" class="section level48">
-<p class="heading"></p>
-</div>
-<div class="section level5">
-<h5 id="select-genes">Select genes<a class="anchor" aria-label="anchor" href="#select-genes"></a>
-</h5>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assay</span> <span class="op">&lt;-</span> <span class="st">"RNA"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">data_S</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">assay</span></span>
@@ -138,10 +138,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">genes</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] 1666</span></span></code></pre>
 </div>
-<div class="section level5">
-<h5 id="prepare-the-input-for-gene-gene-wasserstein-distance-computation">Prepare the input for gene-gene Wasserstein distance
+<div class="section level3">
+<h3 id="prepare-the-input-for-gene-gene-wasserstein-distance-computation">Prepare the input for gene-gene Wasserstein distance
 computation<a class="anchor" aria-label="anchor" href="#prepare-the-input-for-gene-gene-wasserstein-distance-computation"></a>
-</h5>
+</h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_S</span> <span class="op">&lt;-</span> <span class="fu">GeneTrajectory</span><span class="fu">::</span><span class="fu"><a href="../reference/RunDM.html">RunDM</a></span><span class="op">(</span><span class="va">data_S</span><span class="op">)</span></span>
 <span><span class="va">cell.graph.dist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetGraphDistance.html">GetGraphDistance</a></span><span class="op">(</span><span class="va">data_S</span>, K <span class="op">=</span> <span class="fl">10</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div>
@@ -153,10 +153,10 @@ computation<a class="anchor" aria-label="anchor" href="#prepare-the-input-for-ge
 <pre><code><span><span class="co">## Run k-means clustering</span></span></code></pre>
 <pre><code><span><span class="co">## Coarse-grain matrices</span></span></code></pre>
 </div>
-<div class="section level5">
-<h5 id="prepare-the-input-for-gene-gene-wasserstein-distance-computation-1">Prepare the input for gene-gene Wasserstein distance
+<div class="section level3">
+<h3 id="prepare-the-input-for-gene-gene-wasserstein-distance-computation-1">Prepare the input for gene-gene Wasserstein distance
 computation<a class="anchor" aria-label="anchor" href="#prepare-the-input-for-gene-gene-wasserstein-distance-computation-1"></a>
-</h5>
+</h3>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#####Save the files for computation in Python</span></span>
 <span><span class="va">dir.path</span> <span class="op">&lt;-</span> <span class="st">"/banach1/rq25/tmp/scVelo_example2/"</span></span>
@@ -166,14 +166,15 @@ computation<a class="anchor" aria-label="anchor" href="#prepare-the-input-for-ge
 <span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="va">cg_output</span><span class="op">[[</span><span class="st">"graph.dist"</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.path</span>, <span class="st">"ot_cost.csv"</span><span class="op">)</span>, row.names <span class="op">=</span> <span class="cn">F</span>, col.names <span class="op">=</span> <span class="cn">F</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
 <span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/externalFormats.html" class="external-link">writeMM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></span><span class="op">(</span><span class="va">cg_output</span><span class="op">[[</span><span class="st">"gene.expression"</span><span class="op">]</span><span class="op">]</span>, sparse <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.path</span>, <span class="st">"gene_expression.mtx"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## NULL</span></span></code></pre>
-<div id="section-2" class="section level48">
+<div id="section-2" class="section level49">
 <p class="heading"></p>
 </div>
 </div>
-<div class="section level5">
-<h5 id="wasserstein-distance-computation-in-python">Wasserstein distance computation in Python<a class="anchor" aria-label="anchor" href="#wasserstein-distance-computation-in-python"></a>
-</h5>
-<div id="section-3" class="section level48">
+</div>
+<div class="section level2">
+<h2 id="wasserstein-distance-computation-in-python">Wasserstein distance computation in Python<a class="anchor" aria-label="anchor" href="#wasserstein-distance-computation-in-python"></a>
+</h2>
+<div id="section-3" class="section level49">
 <p class="heading"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Make sure to install the latest version of POT module (python), using the following:</span></span>
@@ -182,15 +183,14 @@ computation<a class="anchor" aria-label="anchor" href="#prepare-the-input-for-ge
 <span></span>
 <span><span class="co">#system(sprintf("nohup /data/rihao/anaconda3/bin/python /data/rihao/GeneTrajectory/GeneTrajectory/python/gene_distance_cal_parallel.py %s &amp;", dir.path))</span></span></code></pre></div>
 </div>
-<div id="section-4" class="section level48">
+<div id="section-4" class="section level49">
 <p class="heading"></p>
 </div>
 </div>
-</div>
-<div class="section level3">
-<h3 id="gene-trajectory-inference-and-visualization">Gene trajectory inference and visualization<a class="anchor" aria-label="anchor" href="#gene-trajectory-inference-and-visualization"></a>
-</h3>
-<div id="section-5" class="section level48">
+<div class="section level2">
+<h2 id="gene-trajectory-inference-and-visualization">Gene trajectory inference and visualization<a class="anchor" aria-label="anchor" href="#gene-trajectory-inference-and-visualization"></a>
+</h2>
+<div id="section-5" class="section level49">
 <p class="heading"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dir.path</span> <span class="op">&lt;-</span> <span class="st">"/banach1/rq25/GeneTrajectory_data/more_biological_examples/scvelo_example/DM_DIM10_K10/"</span></span>
@@ -245,9 +245,9 @@ computation<a class="anchor" aria-label="anchor" href="#prepare-the-input-for-ge
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
-<div class="section level3">
-<h3 id="visualize-gene-bin-plots">Visualize gene bin plots<a class="anchor" aria-label="anchor" href="#visualize-gene-bin-plots"></a>
-</h3>
+<div class="section level2">
+<h2 id="visualize-gene-bin-plots">Visualize gene bin plots<a class="anchor" aria-label="anchor" href="#visualize-gene-bin-plots"></a>
+</h2>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_S</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddGeneBinScore.html">AddGeneBinScore</a></span><span class="op">(</span><span class="va">data_S</span>, <span class="va">gene_trajectory</span>, N.bin <span class="op">=</span> <span class="fl">7</span>, trajectories <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, assay <span class="op">=</span> <span class="st">"RNA"</span>, reverse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">F</span>, <span class="cn">F</span>, <span class="cn">F</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">data_S</span>, pt.size <span class="op">=</span> <span class="fl">0.05</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Trajectory"</span>,<span class="fl">1</span>,<span class="st">"_genes"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">7</span>, order <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&amp;</span></span>
@@ -308,7 +308,9 @@ computation<a class="anchor" aria-label="anchor" href="#prepare-the-input-for-ge
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 

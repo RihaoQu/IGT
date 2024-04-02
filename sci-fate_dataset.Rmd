@@ -2,7 +2,10 @@
 title: "GeneTrajectory example (scVelo dataset)"
 author: "Rihao Qu"
 date: "12/05/2023"
-output: html_document
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_depth: 3
 ---
   
 ```{r setup, include=FALSE}
@@ -31,7 +34,7 @@ library(openxlsx)
 setwd("/banach1/rq25/sci-fate_analysis/data/")
 
 data_S <- readRDS("/banach1/rq25/sci-fate_analysis/data/data_S_scifate_CC_GR.rds")
-DimPlot(data_S, group.by = "treatment_time", reduction = "umap.orig")
+#DimPlot(data_S, group.by = "treatment_time", dims = c(1,2), reduction = "umap.orig")
 DimPlot(data_S, group.by = "treatment_time", reduction = "umap.new.GR")
 
 TF_gene_summary <- read.xlsx("../41587_2020_480_MOESM3_ESM.xlsx", sheet = 2)
@@ -64,7 +67,7 @@ cg_output <- CoarseGrain(data_S, cell.graph.dist, genes, N = 1000, assay = "RNA_
 which(apply(cg_output[["gene.expression"]], 2, sum) == 0)
 
 #####Save the files for computation in Python
-dir.path <- "/banach1/rq25/tmp/sci-fate_example/"
+dir.path <- "/banach1/rq25/tmp/sci-fate_example2/"
 dir.create(dir.path)
 write.table(cg_output[["features"]][-which(apply(cg_output[["gene.expression"]], 2, sum) == 0)], paste0(dir.path, "gene_names.csv"), row.names = F, col.names = F, sep = ",")
 write.table(cg_output[["graph.dist"]], paste0(dir.path, "ot_cost.csv"), row.names = F, col.names = F, sep = ",")
