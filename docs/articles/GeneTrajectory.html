@@ -137,7 +137,7 @@ from <a href="https://figshare.com/articles/dataset/Processed_Seurat_objects_for
 <span>                     <span class="st">"3"</span> <span class="op">=</span> <span class="st">"Myeloid type-2 dendritic cells"</span><span class="op">)</span></span>
 <span><span class="va">data_S</span><span class="op">$</span><span class="va">celltype</span> <span class="op">&lt;-</span> <span class="va">cluster_relabel</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">data_S</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">data_S</span>, group.by <span class="op">=</span> <span class="st">"celltype"</span>, shuffle <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-2-1.png" width="528"></p>
+<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
 <div id="section" class="section level49">
 <p class="heading"></p>
 </div>
@@ -148,8 +148,12 @@ from <a href="https://figshare.com/articles/dataset/Processed_Seurat_objects_for
 <div id="section-1" class="section level49">
 <p class="heading"></p>
 <p>We narrow down the gene list for gene-gene distance computation by
-focusing on the top 500 variable genes expressed by 1% - 50% of cells.
-## Select genes</p>
+focusing on the top 500 variable genes expressed by 1% - 50% of
+cells.</p>
+</div>
+<div class="section level3">
+<h3 id="select-genes">Select genes<a class="anchor" aria-label="anchor" href="#select-genes"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assay</span> <span class="op">&lt;-</span> <span class="st">"RNA"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/DefaultAssay.html" class="external-link">DefaultAssay</a></span><span class="op">(</span><span class="va">data_S</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">assay</span></span>
@@ -176,21 +180,6 @@ graph distances.</p>
 <code class="sourceCode R"><span><span class="va">cg_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CoarseGrain.html">CoarseGrain</a></span><span class="op">(</span><span class="va">data_S</span>, <span class="va">cell.graph.dist</span>, <span class="va">genes</span>, N <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Run k-means clustering</span></span></code></pre>
 <pre><code><span><span class="co">## Coarse-grain matrices</span></span></code></pre>
-</div>
-<div class="section level3">
-<h3 id="prepare-the-input-for-gene-gene-wasserstein-distance-computation-1">Prepare the input for gene-gene Wasserstein distance
-computation<a class="anchor" aria-label="anchor" href="#prepare-the-input-for-gene-gene-wasserstein-distance-computation-1"></a>
-</h3>
-<p>The intermediate outputs are written into a local directory which
-allows for gene-gene Wasserstein distance computation using <a href="https://pythonot.github.io/" class="external-link">Python OT package</a>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">##### Save the files for computation in Python</span></span>
-<span><span class="va">dir.path</span> <span class="op">&lt;-</span> <span class="st">"/banach1/rq25/GeneTrajectory_data/re_test/human_myeloid/N500/"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">dir.path</span>, recursive<span class="op">=</span><span class="cn">T</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="va">cg_output</span><span class="op">[[</span><span class="st">"features"</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.path</span>, <span class="st">"gene_names.csv"</span><span class="op">)</span>, row.names <span class="op">=</span> <span class="cn">F</span>, col.names <span class="op">=</span> <span class="cn">F</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="va">cg_output</span><span class="op">[[</span><span class="st">"graph.dist"</span><span class="op">]</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.path</span>, <span class="st">"ot_cost.csv"</span><span class="op">)</span>, row.names <span class="op">=</span> <span class="cn">F</span>, col.names <span class="op">=</span> <span class="cn">F</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
-<span><span class="fu">Matrix</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/externalFormats.html" class="external-link">writeMM</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix</a></span><span class="op">(</span><span class="va">cg_output</span><span class="op">[[</span><span class="st">"gene.expression"</span><span class="op">]</span><span class="op">]</span>, sparse <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">dir.path</span>, <span class="st">"gene_expression.mtx"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## NULL</span></span></code></pre>
 <div id="section-2" class="section level49">
 <p class="heading"></p>
 </div>
@@ -201,12 +190,18 @@ allows for gene-gene Wasserstein distance computation using <a href="https://pyt
 </h2>
 <div id="section-3" class="section level49">
 <p class="heading"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Make sure to install the latest version of POT module (python), using the following:</span></span>
-<span><span class="co"># pip install -U https://github.com/PythonOT/POT/archive/master.zip</span></span>
-<span><span class="co"># Run the following command to get the gene-gene Wasserstein distance matrix</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_exists</a></span><span class="op">(</span><span class="st">'gene_trajectory'</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/virtualenv-tools.html" class="external-link">virtualenv_create</a></span><span class="op">(</span><span class="st">'gene_trajectory'</span>, packages<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'gene_trajectory'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/use_python.html" class="external-link">use_virtualenv</a></span><span class="op">(</span><span class="st">'gene_trajectory'</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.html" class="external-link">system</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"nohup /data/rihao/anaconda3/bin/python /data/rihao/GeneTrajectory/GeneTrajectory/python/gene_distance_cal_parallel_50000.py %s &amp;"</span>, <span class="va">dir.path</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">cal_ot_mat_from_numpy</span> <span class="op">&lt;-</span> <span class="fu">reticulate</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/import.html" class="external-link">import</a></span><span class="op">(</span><span class="st">'gene_trajectory.compute_gene_distance_cmd'</span><span class="op">)</span><span class="op">$</span><span class="va">cal_ot_mat_from_numpy</span></span>
+<span></span>
+<span><span class="va">gene.dist.mat</span> <span class="op">&lt;-</span> <span class="fu">cal_ot_mat_from_numpy</span><span class="op">(</span>ot_cost <span class="op">=</span> <span class="va">cg_output</span><span class="op">[[</span><span class="st">"graph.dist"</span><span class="op">]</span><span class="op">]</span>, gene_expr <span class="op">=</span> <span class="va">cg_output</span><span class="op">[[</span><span class="st">"gene.expression"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">gene.dist.mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cg_output</span><span class="op">[[</span><span class="st">"features"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">gene.dist.mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">cg_output</span><span class="op">[[</span><span class="st">"features"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">gene.dist.mat</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="section-4" class="section level49">
 <p class="heading"></p>
@@ -217,23 +212,30 @@ allows for gene-gene Wasserstein distance computation using <a href="https://pyt
 </h2>
 <div id="section-5" class="section level49">
 <p class="heading"></p>
-<p>When the computation is finished, a file named <code>emd.csv</code>
-is generated in the same directory. Gene trajectory identification and
-visualization can be done using the following code.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dir.path</span> <span class="op">&lt;-</span> <span class="st">"/banach1/rq25/GeneTrajectory_data/re_test/human_myeloid/N500/"</span></span>
-<span><span class="va">gene.dist.mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadGeneDistMat.html">LoadGeneDistMat</a></span><span class="op">(</span><span class="va">dir.path</span>, file_name <span class="op">=</span> <span class="st">"emd.csv"</span><span class="op">)</span><span class="co">#[genes, genes]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">gene.dist.mat</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] 251 251</span></span></code></pre>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gene_embedding</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetGeneEmbedding.html">GetGeneEmbedding</a></span><span class="op">(</span><span class="va">gene.dist.mat</span>, K <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">$</span><span class="va">diffu.emb</span></span>
-<span></span>
-<span><span class="va">gene_trajectory</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExtractGeneTrajectory.html">ExtractGeneTrajectory</a></span><span class="op">(</span><span class="va">gene_embedding</span>, <span class="va">gene.dist.mat</span>, N <span class="op">=</span> <span class="fl">3</span>, t.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">7</span>,<span class="fl">7</span><span class="op">)</span>, K <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<p>Next, we generate the gene embedding by employing Diffusion Map.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gene_embedding</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GetGeneEmbedding.html">GetGeneEmbedding</a></span><span class="op">(</span><span class="va">gene.dist.mat</span>, K <span class="op">=</span> <span class="fl">5</span><span class="op">)</span><span class="op">$</span><span class="va">diffu.emb</span></span></code></pre></div>
+<p>The extraction of gene trajectories is done sequentially. The initial
+node (terminus-1) is defined by the gene with the largest distance from
+the origin in the Diffusion Map embedding. A random-walk procedure is
+then employed on the gene graph to select the other genes that belong to
+the trajectory terminated at terminus-1. After retrieving genes for the
+first trajectory, we identify the terminus of the subsequent gene
+trajectory among the remaining genes and repeat the steps above. This is
+done iteratively until all detectable trajectories are extracted.</p>
+<ul>
+<li><p><code>N</code>: the number of trajectories to extract;</p></li>
+<li><p><code>t.list</code>: the time step of random walk to extract each
+trajectory. Increasing each <code>t</code> extracts a longer
+trajectory.</p></li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">gene_trajectory</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ExtractGeneTrajectory.html">ExtractGeneTrajectory</a></span><span class="op">(</span><span class="va">gene_embedding</span>, <span class="va">gene.dist.mat</span>, N <span class="op">=</span> <span class="fl">3</span>, t.list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">7</span>,<span class="fl">7</span><span class="op">)</span>, K <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">gene_trajectory</span><span class="op">$</span><span class="va">selected</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Trajectory-1 Trajectory-2 Trajectory-3 </span></span>
 <span><span class="co">##           43           55          153</span></span></code></pre>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.5</span>,<span class="fl">1.5</span>,<span class="fl">1.5</span>,<span class="fl">1.5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/plot3D/man/scatter.html" class="external-link">scatter3D</a></span><span class="op">(</span><span class="va">gene_embedding</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>,</span>
 <span>          <span class="va">gene_embedding</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>,</span>
@@ -241,8 +243,8 @@ visualization can be done using the following code.</p>
 <span>          bty <span class="op">=</span> <span class="st">"b2"</span>, colvar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">gene_trajectory</span><span class="op">$</span><span class="va">selected</span><span class="op">)</span><span class="op">)</span><span class="op">-</span><span class="fl">1</span>,</span>
 <span>          main <span class="op">=</span> <span class="st">"trajectory"</span>, pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">1</span>, theta <span class="op">=</span> <span class="fl">45</span>, phi <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>          col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/plot3D/man/colors.html" class="external-link">ramp.col</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://scales.r-lib.org/reference/hue_pal.html" class="external-link">hue_pal</a></span><span class="op">(</span><span class="op">)</span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-7-1.png" width="432"></p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-8-1.png" width="432"></p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">gene_trajectory_sub</span> <span class="op">&lt;-</span> <span class="va">gene_trajectory</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">gene_trajectory</span><span class="op">$</span><span class="va">selected</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Trajectory-"</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span>,<span class="op">]</span></span>
@@ -261,19 +263,21 @@ regions in the cell embedding. Here, we would recommend users to apply
 <a href="https://github.com/KlugerLab/ALRA/blob/master/README.md" class="external-link">ALRA</a>
 imputation to smooth the expression values for generating gene bin
 plots.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_S</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SeuratWrappers/man/RunALRA.html" class="external-link">RunALRA</a></span><span class="op">(</span><span class="va">data_S</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_S</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AddGeneBinScore.html">AddGeneBinScore</a></span><span class="op">(</span><span class="va">data_S</span>, <span class="va">gene_trajectory</span>, N.bin <span class="op">=</span> <span class="fl">5</span>, trajectories <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, assay <span class="op">=</span> <span class="st">"alra"</span>, reverse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">F</span>, <span class="cn">F</span>, <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">data_S</span>, pt.size <span class="op">=</span> <span class="fl">0.05</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Trajectory"</span>,<span class="fl">1</span>,<span class="st">"_genes"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">5</span>, order <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&amp;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradientn</a></span><span class="op">(</span>colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://scales.r-lib.org/reference/brewer_pal.html" class="external-link">brewer_pal</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"RdYlBu"</span><span class="op">)</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoAxes</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-8-1.png" width="1152"></p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-10-1.png" width="1152"></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">data_S</span>, pt.size <span class="op">=</span> <span class="fl">0.05</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Trajectory"</span>,<span class="fl">2</span>,<span class="st">"_genes"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">5</span>, order <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&amp;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradientn</a></span><span class="op">(</span>colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://scales.r-lib.org/reference/brewer_pal.html" class="external-link">brewer_pal</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"RdYlBu"</span><span class="op">)</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoAxes</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-8-2.png" width="1152"></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-10-2.png" width="1152"></p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/FeaturePlot.html" class="external-link">FeaturePlot</a></span><span class="op">(</span><span class="va">data_S</span>, pt.size <span class="op">=</span> <span class="fl">0.05</span>, features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Trajectory"</span>,<span class="fl">3</span>,<span class="st">"_genes"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">5</span>, order <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">&amp;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_color_gradientn</a></span><span class="op">(</span>colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html" class="external-link">rev</a></span><span class="op">(</span><span class="fu"><a href="https://scales.r-lib.org/reference/brewer_pal.html" class="external-link">brewer_pal</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"RdYlBu"</span><span class="op">)</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoLegend</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/SeuratTheme.html" class="external-link">NoAxes</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-8-3.png" width="1152"></p>
+<p><img src="GeneTrajectory_files/figure-html/unnamed-chunk-10-3.png" width="1152"></p>
 </div>
   </div>
 
